@@ -1,0 +1,12 @@
+---
+# defaults file for kvm_provision
+baseImageName: rhel9-web-template.qcow2
+baseImageSha: b9b621b26725ba95442d9a56cbaa054784e0779a9522ec6eafff07c6e6f717ea
+libvirtPoolDir: "/home/samdiament/.local/share/libvirt/images"
+vmName: deleteme
+vmVcpus: 2
+vmRamMb: 2048
+vmNet: vmnetwork
+vmRootPass: redhat2023
+cleanupTmp: no
+sshKey: /root/.ssh/id_rsa.pub
