@@ -1,3 +1,5 @@
+---
+# playbook to execute kvm_provision role
 - name: Deploys VM based on cloud image
   hosts: all
   gather_facts: yes
