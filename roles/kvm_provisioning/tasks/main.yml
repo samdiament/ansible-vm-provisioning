@@ -1,0 +1,44 @@
+---
+# tasks file for kvm_provisioning
+- name: Include prerequisite tasks from prerequisites.yml
+  ansible.builtin.import_tasks:
+    file: prerequisites.yml
+  
+- name: Begin provisioning new VM
+  when: "vm_name not in existing_vms.list_vms"
+  block:
+    - name: Ensure image file is copied from base template image file
+      tags:
+        - provisioning
+      ansible.builtin.copy:
+        dest: "{{ libvirt_pool_dir }}/{{ vm_name }}.qcow2"
+        mode: '0600'
+        owner: root
+        group: root
+        remote_src: true
+        src: "{{ libvirt_pool_dir }}/{{ template_image_file }}"
+
+    - name: Ensure customizations are set in the image
+      command: |
+        virt-customize -a {{ libvirt_pool_dir }}/{{ vm_name }}.qcow2 \
+        --hostname {{ vm_name }} \
+        --root-password 'password:{{ vm_root_password }}' \
+        --ssh-inject 'root:file:{{ ssh_key }}' \
+        --uninstall cloud-init --selinux-relabel
+
+
+    - name: Ensure virtual machine exists using template
+      tags:
+        - provisioning
+      community.libvirt.virt:
+        command: define
+        xml: "{{ lookup('template', 'templates/kvm_template.xml.j2') }}"
+
+- name: Ensure VM is running
+  register: vm_start_results
+  until: "vm_start_results is success"
+  retries: 15
+  delay: 2
+  community.libvirt.virt:
+    name: "{{ vm_name }}"
+    state: running

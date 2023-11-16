@@ -1,0 +1,5 @@
+vm_name: 
+vm_ram_mb: 
+vm_vcpus: 
+libvirt_pool_dir: 
+vm_net: vmnetwork

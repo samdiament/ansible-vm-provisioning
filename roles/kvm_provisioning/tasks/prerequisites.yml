@@ -1,0 +1,33 @@
+---
+- name: Ensure directory for VMs exists
+  tags:
+    - prereq
+  ansible.builtin.file:
+    path: "{{ libvirt_pool_dir }}"
+    state: directory
+    mode: '0711'
+
+- name: Ensure mandatory libraries are installed | cockpit, libvirt, qemu-kvm, cockpit-machines
+  tags:
+    - prereq
+  ansible.builtin.dnf:
+    name:
+      - cockpit
+      - libvirt
+      - qemu-kvm
+      - cockpit-machines
+    state: latest
+
+- name: Ensure libvirt service is started
+  tags:
+    - prereq
+  ansible.builtin.service:
+    name: libvirtd
+    enabled: true
+    state: started
+
+- name: Get list of VMs
+  register: existing_vms
+  changed_when: false
+  community.libvirt.virt:
+    command: list_vms
