@@ -19,7 +19,7 @@
         src: "{{ libvirt_pool_dir }}/{{ template_image_file }}"
 
     - name: Ensure customizations are set in the image
-      command: |
+      ansible.builtin.command: |
         virt-customize -a {{ libvirt_pool_dir }}/{{ vm_name }}.qcow2 \
         --hostname {{ vm_name }} \
         --root-password 'password:{{ vm_root_password }}' \

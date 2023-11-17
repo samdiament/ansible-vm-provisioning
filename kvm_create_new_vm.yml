@@ -1,6 +1,6 @@
 ---
 - name: Provision new VM | KVM
-  hosts: localhost
+  hosts: all
   become: true
   gather_facts: false
 
