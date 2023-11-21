@@ -1,0 +1,5 @@
+---
+- name: Configure new RHEL server
+  hosts: all
+  become: false
+  

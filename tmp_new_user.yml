@@ -1,0 +1,20 @@
+---
+- name: Configure new RHEL user, SSH keys, and root access
+  hosts: new_hosts
+  gather_facts: false
+
+  vars:
+    users:
+      - user: sam
+        groups: [wheel]
+        password: 'redhat123'
+        password_expire_max: 100
+        user_system: false
+        uid: 11223344
+        sudo: true_nopassword # options: false, true, true_nopassword
+
+  tasks:
+    - name: Loop through list to create users
+      loop: "{{ users }}"
+      ansible.builtin.include_tasks:
+        file: tmp_new_user_tasks.yml

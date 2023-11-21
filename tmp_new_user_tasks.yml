@@ -1,0 +1,24 @@
+- name: Ensure user exists on managed node
+  ansible.builtin.user:
+    name: "{{ item.user }}"
+    groups: "{{ item.groups }}"
+    password: "{{ item.password | password_hash('sha512') | default() }}"
+    password_expire_max: "{{ item.password_expire_max | default(30) }}"
+    state: present
+    system: "{{ item.user_system | default('false') }}"
+    uid: "{{ item.uid | default | default() }}"
+    update_password: on_create
+
+- name: Conditional | Ensure user has sudo access
+  when:
+    - item.sudo == "true_nopassword"
+  ansible.builtin.copy:
+    content: "{{ item.user }} ALL=(ALL) NOPASSWD: ALL"
+    dest: "/etc/sudoers.d/{{ item.user }}-nopassword-all"
+
+- name: Conditional | Ensure user has sudo access
+  when:
+    - item.sudo == "true"
+  ansible.builtin.copy:
+    content: "{{ item.user }} ALL=(ALL) ALL"
+    dest: "/etc/sudoers.d/{{ item.user }}-all"

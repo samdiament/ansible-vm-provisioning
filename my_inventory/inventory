@@ -1,0 +1,8 @@
+localhost
+
+[new_hosts]
+deleteme2
+
+[new_hosts:vars]
+ansible_user=root
+
